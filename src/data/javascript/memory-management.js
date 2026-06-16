@@ -15,82 +15,125 @@ export const memoryManagement = {
   ],
 
   definition:
-    "JavaScript automatically allocates memory when values are created and frees memory through garbage collection when objects are no longer reachable. Memory leaks happen when unused objects are accidentally kept reachable.",
+    "JavaScript automatically manages memory by allocating it when values are created and freeing it through garbage collection when those values become unreachable. Memory leaks occur when unused data is still accidentally referenced and cannot be collected.",
 
-  why:
-    "JavaScript removes the need for manual memory management, but long-running apps can still slow down or crash when references are kept alive by mistake. Understanding reachability helps prevent leaks in SPAs, event-heavy interfaces, and cached data structures.",
+  simpleExplanation:
+    "JavaScript handles memory automatically, so developers do not manually allocate or free memory.\n\nWhen you create variables, objects, or functions, memory is allocated. When they are no longer needed, garbage collection removes them.\n\nThe key idea is reachability — if something can still be accessed from a root reference (like global scope, active functions, or closures), it stays in memory.\n\nProblems happen when unused data is still reachable due to mistakes like event listeners, intervals, or closures.",
+
+  romanUrduRevision:
+    "JavaScript memory ko automatically manage karta hai.\nJo cheez reachable hoti hai woh memory mein rehti hai, warna garbage collector remove kar deta hai.",
+
+  why: "Even though JavaScript has automatic garbage collection, real-world applications can still suffer from memory leaks.\nLong-running apps like SPAs, dashboards, and real-time systems can slowly consume more memory if references are not cleaned properly.\nUnderstanding memory helps prevent crashes, slow performance, and browser freezes.",
 
   how: [
-    "Step 1 - Memory follows the lifecycle allocate, use, then release",
-    "Step 2 - Stack memory stores primitives and references for active function calls",
-    "Step 3 - Heap memory stores objects and functions with dynamic size",
-    "Step 4 - An object is reachable if it can be accessed from roots like globals, active calls, or closures",
-    "Step 5 - Mark and Sweep starts from roots and marks all reachable objects",
-    "Step 6 - The sweep phase removes unmarked objects because they are unreachable",
-    "Step 7 - Leaks happen when listeners, intervals, closures, detached DOM nodes, or globals keep old data reachable",
-    "Step 8 - WeakMap and WeakSet hold weak references so keys can still be collected",
+    "Step 1 - Memory lifecycle: allocate → use → release",
+    "Step 2 - Stack stores function calls and primitive references",
+    "Step 3 - Heap stores objects, arrays, and functions",
+    "Step 4 - Reachability is determined from root references (global, stack, closures)",
+    "Step 5 - Mark phase identifies all reachable objects",
+    "Step 6 - Sweep phase removes unreachable objects from heap",
+    "Step 7 - Closures, event listeners, and timers can unintentionally keep objects alive",
+    "Step 8 - WeakMap and WeakSet allow garbage collection by holding weak references",
   ],
 
   diagram: `
 flowchart TD
-  A[Roots global stack closures] --> B[Mark Object A]
-  B --> C[Mark Object B]
-  C --> D[Mark Object C]
-  E[Object D no root path] --> F[Not marked]
-  G[Object E no root path] --> H[Not marked]
-  F --> I[Sweep deletes garbage]
-  H --> I
-  J[Event listener closure] --> K[Large data remains reachable]
-  K --> L[Memory leak until cleanup]
+  A[Root References Global Stack Closures] --> B[Mark Reachable Objects]
+  B --> C[Object A reachable]
+  B --> D[Object B reachable]
+  E[Unreachable Object C] --> F[Not marked]
+  F --> G[Sweep removes object]
+  H[Event Listener Closure] --> I[Hidden reference keeps data alive]
+  I --> J[Memory Leak]
   `,
 
   analogy:
-    "Garbage collection is like a city inspection team that starts from known occupied buildings and marks every connected address. Anything unmarked is considered abandoned and can be cleared. A memory leak is a forgotten sign of occupancy that makes an empty building look active, so it cannot be reclaimed.",
+    "Garbage collection is like a cleaning team in a building.\nThey start from occupied rooms and mark all connected rooms as active.\nAnything not connected to an active room is assumed abandoned and gets removed.\nA memory leak is like a fake occupied sign that keeps an empty room from being cleaned.",
+
+  realLifeExample:
+    "Imagine you are building a real-time stock market dashboard. You are listening for price updates every second. If you don't 'remove the listener' when the user closes the dashboard, the data keeps updating in the background forever. This 'invisible room' stays occupied in memory, and eventually, the browser crashes. Adding an 'unmount' cleanup is like the cleaning team finally clearing out that room.",
 
   code: `
+// Memory leak example (bad practice)
 function setupLeak() {
   const bigData = new Array(1000000).fill("data");
+
   document.getElementById("btn").addEventListener("click", () => {
-    console.log(bigData.length); // closure keeps bigData alive
+    console.log(bigData.length); // closure keeps bigData alive forever
   });
 }
 
+
+// Safe cleanup pattern
 function setupSafe() {
   const bigData = new Array(1000000).fill("data");
   const btn = document.getElementById("btn");
-  const handler = () => console.log(bigData.length);
+
+  function handler() {
+    console.log(bigData.length);
+  }
+
   btn.addEventListener("click", handler);
-  return () => btn.removeEventListener("click", handler);
+
+  return () => {
+    btn.removeEventListener("click", handler);
+  };
 }
 
-const id = setInterval(() => console.log("tick"), 1000);
+
+// Timer cleanup (important in real apps)
+const id = setInterval(() => {
+  console.log("running...");
+}, 1000);
+
 clearInterval(id);
 
+
+// WeakMap example (prevents memory leaks)
 const cache = new WeakMap();
-function processUser(userObj) {
-  if (cache.has(userObj)) return cache.get(userObj);
-  const result = expensiveComputation(userObj);
-  cache.set(userObj, result);
+
+function processUser(user) {
+  if (cache.has(user)) return cache.get(user);
+
+  const result = expensiveComputation(user);
+  cache.set(user, result);
+
   return result;
 }
   `,
 
+  commonMistakes: [
+    "Forgetting to remove event listeners",
+    "Not clearing intervals or timeouts",
+    "Closures holding large unused data",
+    "Using global variables unnecessarily",
+    "Keeping references to detached DOM nodes",
+    "Using Map instead of WeakMap for object caching",
+  ],
+
   interviewQA: [
     {
       q: "What is garbage collection in JavaScript?",
-      a: "Garbage collection is automatic memory management. The engine starts from root references, marks reachable objects, and frees memory for objects that cannot be reached anymore.",
+      a: "Garbage collection is an automatic process where JavaScript removes memory of objects that are no longer reachable from root references like global scope, stack, or closures.",
     },
     {
-      q: "What is a memory leak and how can it happen?",
-      a: "A memory leak happens when unused objects remain reachable through accidental references. Common causes include forgotten event listeners, uncleared intervals, closures holding large data, detached DOM nodes, and global arrays that grow forever.",
+      q: "What is a memory leak?",
+      a: "A memory leak happens when unused data is still referenced in memory, preventing garbage collection and causing memory usage to grow over time.",
     },
     {
-      q: "What is the difference between WeakMap and Map regarding memory?",
-      a: "Map holds strong references to keys, so keys stay alive while the Map exists. WeakMap holds weak references to object keys, so entries disappear automatically when the key object has no other references.",
+      q: "What is the difference between heap and stack?",
+      a: "Stack stores execution context and primitive references, while heap stores objects and dynamic data structures that are referenced from the stack.",
     },
     {
-      q: "What is the Mark and Sweep algorithm?",
-      a: "Mark and Sweep starts from roots like globals and the call stack, marks every reachable object, then sweeps away unmarked objects. Unmarked objects are unreachable and safe to free.",
+      q: "How does Mark and Sweep work?",
+      a: "It starts from root references, marks all reachable objects, and then removes everything that is not marked during the sweep phase.",
+    },
+    {
+      q: "Why is WeakMap useful?",
+      a: "WeakMap allows object keys to be garbage collected automatically when no other references exist, helping prevent memory leaks in caches.",
     },
   ],
+
+  interviewSummary:
+    "JavaScript memory is automatically managed using garbage collection. The engine uses reachability rules and Mark and Sweep algorithm to free unused memory. However, developers must still prevent memory leaks caused by closures, event listeners, and global references.",
 };

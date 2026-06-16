@@ -14,78 +14,136 @@ export const executionContext = {
   ],
 
   definition:
-    "An execution context is the environment where JavaScript code is evaluated and run. The call stack is the last in first out stack that keeps track of all active execution contexts while the program runs.",
+    "An execution context is the environment in which JavaScript code is executed and evaluated. It contains all the information needed to run code, such as variables, functions, scope, and the value of 'this'. The call stack is a LIFO (Last In First Out) data structure that keeps track of all active execution contexts.",
 
-  why:
-    "Execution context explains how hoisting, this, scope chains, and recursion all work behind the scenes. It also explains why stack overflow errors happen when too many function calls pile up.",
+  simpleExplanation:
+    "When JavaScript runs any code, it does not execute everything randomly. Instead, it creates a special environment called an execution context.\n\nThink of it like a workspace where JavaScript keeps track of variables, functions, and the current state of code execution.\n\nEvery time a function is called, JavaScript creates a new execution context for that function and puts it on top of something called the call stack.\n\nWhen the function finishes, that context is removed from the stack, and control goes back to the previous one.\n\nThis is how JavaScript manages step-by-step execution of code.",
+
+  romanUrduRevision:
+    "Execution context ek aisa environment hota hai jahan JavaScript code execute hota hai.\n\nJab bhi function call hota hai, naya execution context call stack par add ho jata hai aur jab function complete hota hai to remove ho jata hai.",
+
+  why: "Execution context helps JavaScript manage code execution properly. It explains how variables are stored, how functions are called, how scope works, and how the 'this' keyword is determined. Without execution context, JavaScript would not be able to handle multiple function calls or nested function execution.",
 
   how: [
-    "Step 1 - The global execution context is created first",
-    "Step 2 - Every function call creates a new function execution context",
-    "Step 3 - Each context has a creation phase and an execution phase",
-    "Step 4 - A new context is pushed onto the call stack when the function is called",
-    "Step 5 - When the function returns, that context is popped from the stack",
-    "Step 6 - Execution continues in the context below it",
-    "Step 7 - Infinite recursion keeps pushing frames until stack overflow happens",
+    "Step 1 - JavaScript creates a Global Execution Context when the program starts",
+    "Step 2 - Each function call creates a new Function Execution Context",
+    "Step 3 - Each execution context has a Creation Phase (memory setup)",
+    "Step 4 - Then Execution Phase starts where code is executed line by line",
+    "Step 5 - Each new context is pushed onto the Call Stack",
+    "Step 6 - When function completes, its context is popped from the stack",
+    "Step 7 - Execution continues in the previous context",
+    "Step 8 - Infinite function calls can cause Stack Overflow error",
   ],
 
   diagram: `
 flowchart TD
-  A[GEC at bottom] --> B[main called]
-  B --> C[main FEC pushed]
-  C --> D[greet called]
-  D --> E[greet FEC pushed]
-  E --> F[getName called]
-  F --> G[getName FEC pushed top]
-  G --> H[getName returns popped]
-  H --> I[greet returns popped]
-  I --> J[Back to GEC]
-  A --> K[Stack overflow means endless growth]
+  A[Global Execution Context]
+
+  A --> B[main() called]
+  B --> C[main Execution Context pushed]
+  C --> D[greet() called]
+  D --> E[greet Execution Context pushed]
+  E --> F[getName() called]
+  F --> G[getName Execution Context pushed TOP]
+
+  G --> H[getName completes - POP]
+  H --> I[greet completes - POP]
+  I --> J[Back to main context]
+  J --> K[Back to Global Context]
+
+  A --> L[Call Stack works LIFO]
+  L --> M[Last In First Out]
+  M --> N[Stack Overflow if unlimited calls]
   `,
 
+  realLifeExample:
+    "Imagine a chef working in a kitchen. The chef can only focus on one dish at a time. Every new order is placed on top of a stack of orders. The chef always works on the top order first. When a dish is completed, it is removed from the stack and the chef moves to the next one. This is exactly how the JavaScript call stack works.",
+
   analogy:
-    "The call stack is like a stack of cafeteria trays. Every time a function is called, a new tray goes on top. The kitchen can only work with the tray at the top, and when that tray is finished it gets removed so the next one underneath can continue. If you keep stacking trays forever, the whole pile eventually crashes.",
+    "The call stack is like a stack of books. You can only add a new book on top, and you can only remove the top book first. JavaScript behaves the same way with function calls.",
 
   code: `
 function getName() {
-  // Stack: [GEC, main, greet, getName]
   return "Ali";
 }
+
 function greet() {
-  // Stack: [GEC, main, greet]
   return "Hello " + getName();
 }
+
 function main() {
-  // Stack: [GEC, main]
   console.log(greet());
 }
-// Stack: [GEC]
+
 main();
 
-// function crash() { crash(); } // RangeError stack overflow
+// Stack Flow:
+// Global → main → greet → getName → return back step by step
+
+
+// Stack Overflow Example (Danger)
+function crash() {
+  crash(); // infinite recursion
+}
+
+// factorial example (safe recursion)
 function factorial(n) {
   if (n <= 1) return 1;
   return n * factorial(n - 1);
 }
+
 console.log(factorial(5)); // 120
   `,
 
+  commonMistakes: [
+    "Thinking JavaScript executes all functions at the same time",
+    "Confusing execution context with call stack",
+    "Forgetting that each function call creates a new execution context",
+    "Not understanding why stack overflow happens in recursion",
+    "Assuming variables are shared between function calls automatically",
+    "Ignoring the importance of base case in recursion",
+  ],
+
   interviewQA: [
     {
-      q: "What is an execution context?",
-      a: "An execution context is the environment in which JavaScript code runs. It includes local variables, the scope chain, the this binding, and the code that is currently being executed.",
+      q: "What is an execution context in JavaScript?",
+      a: "An execution context is the environment where JavaScript code is executed. It contains variables, functions, scope, and the value of this for that execution.",
     },
     {
       q: "What is the call stack?",
-      a: "The call stack is a last in first out structure that tracks all active execution contexts. Each function call pushes a new context on top, and each return pops that context off.",
+      a: "The call stack is a LIFO data structure that keeps track of all execution contexts currently running in JavaScript.",
     },
     {
-      q: "What happens when a function is called?",
-      a: "JavaScript creates a new function execution context, performs a creation phase to set up variables and this, then runs the function body during the execution phase. That new context is pushed onto the call stack until the function returns.",
+      q: "What are the phases of execution context?",
+      a: "There are two phases: Creation Phase (memory allocation and hoisting) and Execution Phase (code runs line by line).",
     },
     {
-      q: "What causes a stack overflow error?",
-      a: "A stack overflow happens when function calls keep piling onto the call stack until memory is exhausted. The most common reason is recursion without a proper base case to stop further calls.",
+      q: "What causes stack overflow?",
+      a: "Stack overflow happens when too many function calls are added to the call stack, usually due to infinite recursion without a base case.",
     },
+    {
+      q: "Why is execution context important?",
+      a: "It explains how JavaScript handles scope, hoisting, this keyword, and function execution behind the scenes.",
+    },
+  ],
+
+  realWorldUsage: [
+    "Function execution and program flow",
+    "Understanding recursion",
+    "Debugging call stack errors",
+    "Scope and variable behavior",
+    "Memory management in JavaScript engine",
+    "Framework execution flow (React, Node.js)",
+    "Async function execution understanding",
+  ],
+
+  interviewSummary: [
+    "Execution context is the environment where code runs.",
+    "Each function creates a new execution context.",
+    "Call stack follows LIFO (Last In First Out).",
+    "Creation phase and execution phase exist in every context.",
+    "Stack overflow happens due to infinite recursion.",
+    "Global context is created first.",
+    "Execution context explains scope, hoisting, and this behavior.",
   ],
 };

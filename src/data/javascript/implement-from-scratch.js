@@ -19,6 +19,15 @@ export const implementFromScratch = {
   definition:
     "Implement-from-scratch questions test whether you understand how built-ins and common utilities work internally, not just how to use them. They reveal your grasp of closures, prototypes, timing, recursion, and function context.",
 
+  simpleExplanation:
+    "This is like taking a car engine apart and putting it back together to understand how it works. You might know how to use .map(), but do you know how it actually runs a 'for' loop behind the scenes? These challenges prove you are a deep thinker who understands the language, not just someone who copy-pastes methods.",
+
+  romanUrduRevision:
+    "Built-in functions (jesay .map, .bind) ko khud se likhna seekhna interview ki tayari ka eham hissa hay.\nIs se pata chalta hay ke aap ko JavaScript ke basics (closures, prototypes, 'this' keyword) ki kitni samajh hay.",
+
+  realLifeExample:
+    "Imagine you are building a library for a client who doesn't want to use any heavy tools like Lodash. You need a 'Debounce' feature to make their search bar run smoothly. Since you know how to implement it from scratch, you can write those 5 lines of code myself instead of importing a huge library.",
+
   why:
     "Implementing map, bind, debounce, throttle, deepClone, or memoize shows that you can reason about JavaScript internals, performance tradeoffs, and library behavior with confidence.",
 
@@ -125,4 +134,14 @@ function memoize(fn) {
       a: "Create a Map cache in closure. Convert arguments to a stable key, return cached results when present, otherwise compute, store, and return. Memoization is safe only for pure functions.",
     },
   ],
+
+  commonMistakes: [
+    "Forgetting to return the result in your custom map or filter implementations.",
+    "Not handling edge cases like 'null' or 'Date' objects in a deep clone function.",
+    "Losing the 'this' context when implementing .bind or .apply from scratch.",
+    "Assuming arguments are always strings when creating a memoization key.",
+  ],
+
+  interviewSummary:
+    "Implementing utilities from scratch is the ultimate test of JavaScript mastery. It requires a deep understanding of higher-order functions, closures, and the prototype system. Focus on correctness, edge-case handling, and maintaining the expected 'this' context.",
 };

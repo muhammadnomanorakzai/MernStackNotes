@@ -19,6 +19,15 @@ export const performanceOptimization = {
   definition:
     "JavaScript performance optimization is the practice of making code execute faster, consume less memory, block the browser less, and ship smaller initial payloads.",
 
+  simpleExplanation:
+    "Performance optimization is about making your app 'feel' fast. It's not just about speed, but also about not freezing the screen, loading only what the user needs, and using the computer's resources wisely. If an app takes too long to load or 'lags' when you scroll, it needs optimization.",
+
+  romanUrduRevision:
+    "Performance ka matlab hai application ko tez (fast) banana. Debouncing, Throttling aur Lazy Loading jaisi techniques se hum main thread ko free rakhte hain taake user experience smooth rahay.",
+
+  realLifeExample:
+    "Think of Facebook's news feed. If they loaded every post and image at once, your phone would crash. Instead, they use 'Performance Optimization' tricks. They use 'Virtual Scrolling' to only render the posts you see on the screen. As you scroll, they 'Lazy Load' the next images. If you type in the search bar, they use 'Debounce' so the search only starts after you stop typing. This keeps the app feeling fast despite having millions of posts.",
+
   why:
     "Poor JavaScript performance causes slow loads, janky animation, frozen UI, battery drain, and memory growth. Senior developers measure bottlenecks first, then optimize the part that actually hurts users.",
 
@@ -103,4 +112,13 @@ const ExpensiveList = React.memo(({ items, onItemClick }) =>
       a: "A Web Worker runs JavaScript on a separate background thread. Use it for heavy computation, parsing, compression, sorting, or image processing so the main UI thread stays responsive.",
     },
   ],
+
+  commonMistakes: [
+    "Optimizing early before measuring bottlenecks (premature optimization).",
+    "Forgetting to cleanup event listeners or intervals which causes memory leaks.",
+    "Using expensive array methods inside frequent scroll or resize events without throttling.",
+  ],
+
+  interviewSummary:
+    "Performance optimization focuses on making apps fast and responsive using techniques like debouncing, throttling, lazy loading, and web workers. Always profile with DevTools before optimizing.",
 };

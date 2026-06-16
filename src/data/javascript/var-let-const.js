@@ -18,6 +18,15 @@ export const varLetConst = {
   definition:
     "var, let, and const are three ways to declare variables in JavaScript. They differ in scope, hoisting behavior, and whether reassignment or redeclaration is allowed.",
 
+  simpleExplanation:
+    "Variables values store karne ke liye containers hain. var purana tareeqa hai jo bug-prone hai. let aur const modern containers hain jo zyaada safe hain. const un values ke liye use karen jo change nahi honi, baaqi ke liye let use karen.",
+
+  romanUrduRevision:
+    "var function-scoped hai aur hoisted hota hai undefined ke saath. let aur const block-scoped hain aur unhein declare karne se pehle access nahi kiya ja sakta (TDZ).",
+
+  realLifeExample:
+    "Think of a bank account. Your 'Account Number' should be 'const' because it never changes. Your 'Balance' should be 'let' because it updates every time you spend money. Using 'var' is like writing with chalk on a shared board—anyone can accidentally overwrite your notes.",
+
   why:
     "var caused serious bugs because it leaks outside block scope and is too easy to redeclare. ES6 introduced let and const to give developers predictable block-scoped variables, and const also communicates that a binding should not be reassigned.",
 
@@ -91,4 +100,13 @@ let score = 10;
       a: "var is function scoped instead of block scoped, so it leaks out of loops and conditionals unexpectedly. It is also hoisted as undefined, which can hide bugs. let and const are more predictable and communicate intent clearly.",
     },
   ],
+
+  commonMistakes: [
+    "Using var in loops (accidental global leakage).",
+    "Trying to reassign a const variable.",
+    "Accessing let/const before declaration (TDZ error).",
+  ],
+
+  interviewSummary:
+    "Modern JS standard: use const by default, let for reassignment, and avoid var entirely. Understanding block scope vs function scope is critical for JS developers.",
 };

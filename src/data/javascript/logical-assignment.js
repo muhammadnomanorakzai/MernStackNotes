@@ -17,6 +17,15 @@ export const logicalAssignment = {
   definition:
     "Short-circuit evaluation means JavaScript stops evaluating a logical expression as soon as the result is certain. Logical assignment operators combine logical checks with assignment using ||=, &&=, and ??=.",
 
+  simpleExplanation:
+    "Logical assignment is a shortcut for writing 'if this is true, then set this variable'. For example, instead of writing 'if (!x) x = y', you can just write 'x ||= y'. It makes your code cleaner and faster to read once you understand how the symbols work.",
+
+  romanUrduRevision:
+    "Logical assignment code ko chota (concise) karne ke liye use hota hay.\n||= matlab agar value falsy hay tu assign karo.\n??= matlab agar value null ya undefined hay tu assign karo (ye 0 aur empty string ko overwrite nahi karta).\n&&= matlab agar value truthy hay tu hi assign karo.",
+
+  realLifeExample:
+    "Think of a 'Profile' page. If the user doesn't have a profile picture, you want to show a default 'avatar.png'. Instead of an IF statement, you can use 'user.avatar ||= \"avatar.png\"'. If they already have a picture, nothing changes. If it's missing, the default is set instantly.",
+
   why:
     "Common patterns like setting defaults or updating a value only when it exists used to require repetitive if statements. Logical assignment makes those patterns concise, but the difference between falsy and nullish values matters a lot.",
 
@@ -85,4 +94,13 @@ console.log(result); // "found!"
       a: "&&= updates a variable only if it already has a truthy value. For example, user &&= refreshUser(user) safely refreshes only when user exists.",
     },
   ],
+
+  commonMistakes: [
+    "Using ||= for numbers where 0 is a valid value (0 is falsy, so it will be overwritten).",
+    "Confusing &&= with ||= — &&= only assigns if the original value is ALREADY truthy.",
+    "Over-using logical assignment in complex UI logic where it might make the code harder to debug for beginners.",
+  ],
+
+  interviewSummary:
+    "Logical assignment operators (||=, &&=, ??=) are modern ES2021 features that simplify common conditional patterns. Always use ??= for defaults if 0 or empty strings are valid values in your application.",
 };

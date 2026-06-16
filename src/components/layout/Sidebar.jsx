@@ -111,7 +111,7 @@ function Sidebar({ allTopics, onSelectTopic, onToggleSidebar, selectedTopicId, s
                   {isOpen ? (
                     <div className="mt-2 space-y-2 pl-2">
                       {topics.map((topic) => {
-                        const tone = DIFFICULTY_TONES[topic.difficulty];
+                        const tone = DIFFICULTY_TONES[topic.difficulty] ?? DIFFICULTY_TONES.Beginner;
                         const active = topic.id === selectedTopicId;
                         const matchesSelectedCategory = topicMatchesCategory(topic, category);
 

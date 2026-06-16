@@ -47,6 +47,9 @@ flowchart TD
   analogy:
     "Without modules, every tool sits on one giant shared table and names collide easily. Named exports are asking for a specific tool from a toolbox. Default exports are asking for the main tool. A barrel file is a catalog that re-exports items from many shelves, and dynamic import is fetching a heavy textbook only when class actually needs it.",
 
+  realLifeExample:
+    "In a large React project, you might have hundreds of files. Instead of importing everything in a single index.js (which would make the website load very slowly), you use 'Modules'. You separate your code into small, clean files and use 'export/import'. This makes your code easy to maintain and allows tools to 'Tree Shake' (throw away) any code you aren't actually using.",
+
   code: `
 // math.js
 export const add = (a, b) => a + b;

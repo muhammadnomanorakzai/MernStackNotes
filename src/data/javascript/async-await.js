@@ -16,90 +16,117 @@ export const asyncAwait = {
   ],
 
   definition:
-    "async and await are syntax built on top of Promises that make asynchronous code read like synchronous code. An async function always returns a Promise, and await pauses only that async function until the Promise settles.",
+    "async/await is syntactic sugar over Promises that allows asynchronous code to be written in a synchronous looking style. An async function always returns a Promise, and await pauses only that function until the Promise settles.",
 
-  why:
-    "Promise chains are cleaner than callback hell, but async and await make complex async flows easier to read, debug, and write. They also make try and catch error handling feel natural for asynchronous work.",
+  simpleExplanation:
+    "JavaScript normally handles async work using Promises and then/catch chains. Async/await is a cleaner way to write the same logic.\n\nWhen you mark a function as async, it automatically returns a Promise.\nInside it, await pauses execution of that function until the Promise finishes.\n\nImportant: JavaScript engine does NOT stop. Only that async function pauses.\nThis makes async code easier to read, debug, and maintain like normal step-by-step code.",
+
+  romanUrduRevision:
+    "async/await Promise ka easy version hai jo code ko synchronous jaisa bana deta hai.\nawait sirf us function ko roکتا hai, poori JavaScript nahi.",
+
+  why: "Async/await was introduced to solve readability and debugging problems in Promise chains. It makes asynchronous flows look like synchronous steps, which reduces complexity and improves maintainability in real-world applications like APIs, databases, and UI rendering.",
 
   how: [
-    "Step 1 - Mark a function with async and it will always return a Promise",
-    "Step 2 - Use await inside it to pause until a Promise resolves or rejects",
-    "Step 3 - When the Promise fulfills, execution resumes with the resolved value",
-    "Step 4 - When it rejects, the rejection is thrown like an error",
-    "Step 5 - Only the current async function pauses, not the entire engine",
-    "Step 6 - Sequential awaits wait one after another and can be slower",
-    "Step 7 - Promise all lets independent async tasks run in parallel",
-    "Step 8 - Forgetting await leaves you holding a Promise object instead of data",
+    "Step 1 - async keyword marks a function that always returns a Promise",
+    "Step 2 - await can only be used inside async functions",
+    "Step 3 - await pauses execution until Promise resolves or rejects",
+    "Step 4 - resolved value is returned directly like normal variable",
+    "Step 5 - rejected Promise behaves like a thrown error",
+    "Step 6 - try/catch is used to handle async errors cleanly",
+    "Step 7 - multiple awaits run sequentially by default",
+    "Step 8 - independent tasks should use Promise.all for parallel execution",
+    "Step 9 - forgetting await returns a Promise instead of actual data",
   ],
 
   diagram: `
 sequenceDiagram
   participant Caller
-  participant AsyncFn
+  participant AsyncFunction
   participant API
-  Caller->>AsyncFn: fetchUserData()
-  AsyncFn->>API: await getUser()
-  API-->>AsyncFn: resolved user
-  AsyncFn->>API: await getPosts(user id)
-  API-->>AsyncFn: resolved posts
-  AsyncFn-->>Caller: return user and posts
+
+  Caller->>AsyncFunction: call async function
+  AsyncFunction->>API: await request 1
+  API-->>AsyncFunction: response 1
+  AsyncFunction->>API: await request 2
+  API-->>AsyncFunction: response 2
+  AsyncFunction-->>Caller: final result
   `,
 
   analogy:
-    "await is like placing a sticky note in your instructions that says pause here until this step finishes. The worker handling that set of instructions waits, but the rest of the office keeps moving. When two tasks are independent, using Promise.all is like sending both to assistants at the same time instead of waiting for one assistant to finish before starting the next.",
+    "Async/await is like a chef following a recipe step by step. The chef waits for rice to cook before moving to the next step. But other chefs in the kitchen keep working on their own tasks. If two ingredients are independent, they can be prepared in parallel instead of waiting one by one.",
+
+  realLifeExample:
+    "Imagine a weather app. You first need to get the user's GPS location (async), then use that location to fetch the weather data (async), and finally update the screen. Async/await lets you write this as 3 simple lines of code instead of a messy 'callback hell'.",
 
   code: `
-// Callback hell
-readUser(id, (err, user) => {
-  if (err) return handleError(err);
-  fetchPosts(user.id, (err, posts) => {
-    if (err) return handleError(err);
-    fetchComments(posts[0].id, (err, comments) => console.log(comments));
-  });
-});
+// Promise chain (old style)
+getUser()
+  .then(user => getPosts(user.id))
+  .then(posts => console.log(posts))
+  .catch(err => console.log(err));
 
-// Promise chain
-getUser().then((user) => getPosts(user.id)).then(console.log).catch(handleError);
 
-// Async await
-async function loadFlow() {
-  const user = await getUser();
-  const posts = await getPosts(user.id);
-  return posts;
-}
-
+// Async/Await (modern style)
 async function loadData() {
   try {
-    const [user, posts] = await Promise.all([getUser(), getPosts()]);
-    return { user, posts };
+    const user = await getUser();
+    const posts = await getPosts(user.id);
+    return posts;
   } catch (err) {
-    console.error("Failed:", err.message);
-    return null;
+    console.log("Error:", err.message);
   }
 }
-// const result = fetchData(); // Promise pending if await is forgotten
+
+
+// Parallel execution (important optimization)
+async function loadBoth() {
+  const [user, posts] = await Promise.all([
+    getUser(),
+    getPosts()
+  ]);
+
+  return { user, posts };
+}
+
+
+// Common mistake
+async function test() {
+  const data = getUser(); // ❌ missing await
+  console.log(data); // Promise object, not real data
+}
   `,
+
+  commonMistakes: [
+    "Forgetting await and working with Promise instead of value",
+    "Using sequential await when parallel execution is possible",
+    "Not using try/catch for error handling",
+    "Thinking async/await blocks entire JavaScript engine",
+    "Overusing await inside loops instead of batching with Promise.all",
+  ],
 
   interviewQA: [
     {
-      q: "What does async or await do?",
-      a: "async and await let Promise-based code read in a top-to-bottom style. async marks a function as Promise-returning, and await pauses that function until the Promise settles and then resumes with the result.",
+      q: "What is async/await in JavaScript?",
+      a: "Async/await is a modern syntax over Promises that makes asynchronous code look synchronous while still running non-blocking in the background.",
+    },
+    {
+      q: "Does await block JavaScript execution?",
+      a: "No. It only pauses the async function where it is used. The rest of JavaScript continues running normally.",
     },
     {
       q: "What happens if you forget await?",
-      a: "The async operation still starts, but your variable receives the Promise object instead of its resolved value. That often causes bugs because later code treats a pending Promise like real data.",
+      a: "You receive a Promise object instead of resolved data, which often causes bugs when treated like real value.",
     },
     {
-      q: "How do you handle errors in async or await?",
-      a: "Wrap awaited operations in try and catch. If an awaited Promise rejects, the rejection is thrown as an error and can be caught just like synchronous exceptions.",
+      q: "How do you handle errors in async/await?",
+      a: "Use try/catch blocks. If a Promise rejects, it behaves like a thrown exception.",
     },
     {
-      q: "What is the difference between sequential and parallel execution?",
-      a: "Sequential awaits wait for one task to finish before starting the next, which adds their times together. Parallel execution starts independent tasks at once, often with Promise.all, so total time is closer to the slowest single task.",
-    },
-    {
-      q: "Does await block the entire JavaScript engine?",
-      a: "No. await pauses only the current async function. Other code, event handlers, timers, and async tasks can continue running while that function is waiting.",
+      q: "When should you use Promise.all with async/await?",
+      a: "When multiple async tasks are independent and can run in parallel to improve performance.",
     },
   ],
+
+  interviewSummary:
+    "Async/await simplifies Promise-based asynchronous code into readable step-by-step logic. It does not block JavaScript, only pauses the function. Proper use of try/catch and Promise.all is essential for writing production-grade async code.",
 };

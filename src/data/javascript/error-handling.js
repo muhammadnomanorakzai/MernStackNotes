@@ -15,51 +15,81 @@ export const errorHandling = {
   ],
 
   definition:
-    "JavaScript error handling uses try, catch, and finally blocks to detect runtime failures and recover without crashing the whole app. You can also throw your own Error objects when invalid situations are detected.",
+    "Error handling in JavaScript is a mechanism used to detect runtime failures and prevent application crashes. It uses try, catch, and finally blocks to handle unexpected errors, and throw to manually generate errors when something goes wrong in the program.",
 
-  why:
-    "Unhandled errors break user flows and can leave apps in inconsistent states. Good error handling lets you show friendly messages, retry work, clean up resources, and keep the rest of the application alive.",
+  simpleExplanation:
+    "In real applications, errors are unavoidable.\n\nSometimes JSON parsing fails, API calls fail, or user input is invalid.\n\nJavaScript provides a structured way to handle these problems using try, catch, and finally.\n\n- try → contains risky code that may fail\n- catch → handles the error if something goes wrong\n- finally → always runs (success or failure)\n\nInstead of crashing the whole application, JavaScript allows you to gracefully handle the problem and continue running the app.",
+
+  romanUrduRevision:
+    "JavaScript mein errors ko handle karne ke liye try, catch aur finally use hota hai.\n\nAgar code fail ho jaye to catch us error ko handle karta hai aur app crash nahi hota.\n\nfinally hamesha run hota hai chahe error aaye ya na aaye.",
+
+  why: "Without error handling, a single mistake can crash the entire application.\n\nIn real-world apps like e-commerce, banking, or dashboards, this is unacceptable.\n\nError handling allows developers to:\n- Prevent crashes\n- Show user-friendly messages\n- Retry failed operations\n- Clean up resources (like loading states or connections)\n- Debug issues effectively using error objects",
 
   how: [
-    "Step 1 - Put risky code inside a try block",
-    "Step 2 - If an error is thrown, execution jumps to catch immediately",
-    "Step 3 - The catch block receives the error object with fields like name and message",
-    "Step 4 - finally always runs after try and catch for cleanup work",
-    "Step 5 - throw creates custom errors and should usually use Error objects",
-    "Step 6 - Built in error types include TypeError, ReferenceError, SyntaxError, and RangeError",
-    "Step 7 - Async await uses normal try catch around awaited promises",
-    "Step 8 - You can rethrow unexpected errors after checking their type",
+    "Step 1 - Put risky code inside try block",
+    "Step 2 - JavaScript executes code line by line inside try",
+    "Step 3 - If an error occurs, execution immediately jumps to catch",
+    "Step 4 - catch receives an Error object with message, name, and stack",
+    "Step 5 - You can log, recover, or rethrow errors inside catch",
+    "Step 6 - finally block runs no matter what (error or success)",
+    "Step 7 - throw is used to manually create or trigger errors",
+    "Step 8 - async/await uses try/catch for promise-based error handling",
+    "Step 9 - custom errors help identify specific business logic failures",
   ],
 
   diagram: `
 flowchart TD
-  A[Code runs in try] --> B{Error thrown}
-  B -->|Yes| C[Jump to catch]
-  C --> D[Handle error]
-  B -->|No| E[Try completes]
-  D --> F[finally always runs]
-  E --> F
-  C --> G[Unhandled errors can crash app]
-  `,
+  A[Start Execution]
+
+  A --> B[try block runs]
+  B --> C{Error occurs?}
+
+  C -->|No| D[Continue execution]
+  C -->|Yes| E[Jump to catch block]
+
+  E --> F[Handle or log error]
+  D --> G[finally runs]
+  F --> G
+
+  G --> H[Program continues safely]
+`,
+
+  realLifeExample:
+    "Imagine you are booking a ticket online.\n\n- If payment API fails → catch handles the error and shows 'Payment failed'\n- If everything works → try completes successfully\n- Finally → loading spinner is removed no matter what\n\nThis ensures user experience is smooth even when backend fails.",
 
   analogy:
-    "try and catch are like a trapeze act with a safety net. The performer attempts the risky move in the try block. If they fall, the catch block stops the whole show from ending in disaster. The cleanup crew in finally still comes out afterward no matter what happened.",
+    "try/catch/finally is like cooking in a kitchen.\n\n- try → you are cooking a dish\n- catch → if something burns or fails, you fix the mistake\n- finally → you clean the kitchen no matter what happened\n\nEven if food fails, cleaning still happens.",
 
   code: `
+// =========================
+// BASIC ERROR HANDLING
+// =========================
+
 let loading = true;
-try {
-  JSON.parse("{ bad json }");
-} catch (error) {
-  console.log(error.name, error.message);
-} finally {
-  loading = false;
-}
 
 try {
-  throw new Error("Something went wrong");
+  JSON.parse("{ invalid json }"); // risky code
 } catch (error) {
-  console.log(error.name, error.message, Boolean(error.stack));
+  console.log("Error Name:", error.name);
+  console.log("Message:", error.message);
+} finally {
+  loading = false;
+  console.log("Loading stopped");
 }
+
+// =========================
+// MANUAL ERROR THROWING
+// =========================
+
+try {
+  throw new Error("Something went wrong manually");
+} catch (error) {
+  console.log(error.message);
+}
+
+// =========================
+// CUSTOM ERROR CLASS
+// =========================
 
 class ValidationError extends Error {
   constructor(message, field) {
@@ -69,28 +99,81 @@ class ValidationError extends Error {
   }
 }
 
-async function loadUser() {
-  try { throw new ValidationError("Email required", "email"); }
-  catch (error) { if (!(error instanceof ValidationError)) throw error; }
+try {
+  throw new ValidationError("Email is required", "email");
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.log("Validation issue:", error.field);
+  } else {
+    throw error; // rethrow unknown errors
+  }
 }
+
+// =========================
+// ASYNC ERROR HANDLING
+// =========================
+
+async function fetchUser() {
+  try {
+    throw new Error("API failed");
+  } catch (error) {
+    console.log("Handled async error:", error.message);
+  }
+}
+
+fetchUser();
   `,
+
+  commonMistakes: [
+    "Ignoring try/catch in async code",
+    "Throwing strings instead of Error objects",
+    "Using empty catch blocks (hiding errors)",
+    "Forgetting finally runs even after return",
+    "Not handling rejected promises properly",
+    "Overusing try/catch instead of proper validation",
+    "Not rethrowing unknown errors in catch",
+  ],
 
   interviewQA: [
     {
-      q: "What is the purpose of try catch finally?",
-      a: "try contains risky code, catch handles thrown errors, and finally runs regardless of success or failure. Together they let applications recover gracefully and still perform cleanup.",
+      q: "What is try catch used for?",
+      a: "It is used to handle runtime errors so that the application does not crash and can recover gracefully.",
     },
     {
-      q: "What is the difference between throw new Error and throw a string?",
-      a: "Throwing an Error object gives you structured fields like name, message, and stack, which are much better for debugging. Throwing a string loses that useful metadata and is considered poor practice.",
+      q: "What is the role of finally?",
+      a: "finally always executes after try and catch, regardless of success or failure, and is used for cleanup tasks.",
     },
     {
-      q: "Does try catch work with async await?",
-      a: "Yes. When an awaited promise rejects, it behaves like a thrown error inside the async function, so the surrounding catch block can handle it normally.",
+      q: "How does throw work in JavaScript?",
+      a: "throw is used to manually create an error and stop normal execution flow until it is caught.",
     },
     {
-      q: "When would you create a custom Error class?",
-      a: "Create one when you want domain specific error types like validation or authentication failures. That lets callers check instanceof and respond differently based on the exact error class.",
+      q: "Can async functions use try catch?",
+      a: "Yes, async/await errors behave like synchronous errors and can be handled using try/catch.",
     },
+    {
+      q: "Why should we use Error objects instead of strings?",
+      a: "Error objects provide stack traces and structured debugging information which strings do not.",
+    },
+  ],
+
+  realWorldUsage: [
+    "API request error handling",
+    "Form validation in frontend applications",
+    "Database error handling in backend systems",
+    "Payment processing error recovery",
+    "File handling and parsing safety",
+    "Authentication and authorization checks",
+    "Logging and monitoring systems",
+  ],
+
+  interviewSummary: [
+    "try contains risky code",
+    "catch handles errors safely",
+    "finally always runs",
+    "throw creates custom errors",
+    "Error objects provide debugging details",
+    "Async code uses try/catch with await",
+    "Essential for production-ready applications",
   ],
 };

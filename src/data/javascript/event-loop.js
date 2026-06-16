@@ -16,86 +16,159 @@ export const eventLoop = {
   ],
 
   definition:
-    "The Event Loop is JavaScript's mechanism for handling asynchronous operations in a single-threaded environment. It watches the Call Stack and the task queues, then moves work back to the stack when JavaScript is ready to run it.",
+    "The Event Loop is the core mechanism in JavaScript that allows asynchronous code to work in a single-threaded environment. It continuously monitors the Call Stack, Microtask Queue, and Callback Queue, and decides when each piece of code should execute.",
 
-  why:
-    "JavaScript can only run one piece of code at a time on its main thread. Without the Event Loop, slow work like timers or network requests would freeze the page. The Event Loop keeps the UI responsive by letting browsers do slow work outside the engine and deliver callbacks later.",
+  simpleExplanation:
+    "JavaScript runs on a single thread, which means it can execute only one task at a time.\n\nBut real applications need async behavior like API calls, timers, and user events.\n\nThe Event Loop solves this problem by moving slow operations outside JavaScript (Web APIs) and bringing their results back later through queues.\n\nIt makes JavaScript non-blocking and keeps applications responsive.\n\nTwo important queues exist:\n- Microtask Queue (Promises)\n- Callback Queue (setTimeout, events)\n\nMicrotasks always run first before normal callbacks.",
+
+  romanUrduRevision:
+    "JavaScript single thread hota hai, yani ek waqt mein sirf ek kaam karta hai.\n\nEvent Loop async kaam ko handle karta hai.\n\nPromise pehle execute hota hai (microtask), aur setTimeout baad mein (callback queue).",
+
+  why: "Without the Event Loop, JavaScript would freeze whenever it performs slow operations like network requests or timers.\n\nThe Event Loop allows JavaScript to remain fast and responsive by:\n- Offloading heavy work to Web APIs\n- Managing execution order efficiently\n- Prioritizing important tasks like Promises\n- Preventing UI blocking in browsers",
 
   how: [
-    "Step 1 - Synchronous JavaScript runs in the Call Stack from top to bottom",
-    "Step 2 - Async APIs like setTimeout, fetch, and DOM events are handed to browser Web APIs",
-    "Step 3 - Web APIs do the waiting or background work outside the JavaScript engine",
-    "Step 4 - When the work finishes, callbacks are queued as either microtasks or callback queue tasks",
-    "Step 5 - The Event Loop checks whether the Call Stack is empty",
-    "Step 6 - If empty, it drains the entire Microtask Queue first",
-    "Step 7 - Only after microtasks finish does it take one task from the Callback Queue",
-    "Step 8 - That task is pushed onto the Call Stack and executed",
-    "Step 9 - This cycle repeats forever, which is the Event Loop in action",
+    "Step 1 - JavaScript executes synchronous code in Call Stack",
+    "Step 2 - Async tasks (setTimeout, fetch, events) go to Web APIs",
+    "Step 3 - Web APIs handle these tasks outside JS engine",
+    "Step 4 - When completed, callbacks move to queues",
+    "Step 5 - Promise callbacks go to Microtask Queue",
+    "Step 6 - setTimeout and events go to Callback Queue",
+    "Step 7 - Event Loop checks if Call Stack is empty",
+    "Step 8 - Microtask Queue is fully executed first",
+    "Step 9 - Then one task from Callback Queue is executed",
+    "Step 10 - Cycle repeats continuously",
   ],
 
   diagram: `
 flowchart TD
-  A[JS code] --> B[Call Stack]
-  B --> C[Async operation found]
-  C --> D[Web APIs]
-  D --> E[Promise callback]
-  D --> F[Timer or event callback]
-  E --> G[Microtask Queue]
+  A[JavaScript Code Execution] --> B[Call Stack]
+
+  B --> C{Async Task Found?}
+  C -->|Yes| D[Web APIs]
+
+  D --> E[Promise → Microtask Queue]
+  D --> F[setTimeout/Event → Callback Queue]
+
+  E --> G[Microtask Queue Priority]
   F --> H[Callback Queue]
-  I[Event Loop] --> J[Call Stack empty]
-  J --> K[Drain Microtask Queue first]
-  K --> L[Take one from Callback Queue]
+
+  I[Event Loop] --> J{Call Stack Empty?}
+
+  J -->|Yes| K[Drain Microtask Queue First]
+  K --> L[Execute Callback Queue Task]
+
   L --> B
-  L --> J
-  `,
+`,
+
+  realLifeExample:
+    "Imagine a hospital emergency system.\n\nDoctors (Call Stack) can only treat one patient at a time.\n\nMinor tasks go to nurses (Web APIs) for processing.\n\nCritical cases (Promises) are treated first when doctor is free.\n\nNormal cases (setTimeout) are handled afterward.\n\nThis ensures important tasks are prioritized without stopping the system.",
 
   analogy:
-    "Picture a busy restaurant kitchen. The head chef is the Call Stack and can only work on one dish at a time. When something needs the oven or a timer, that work moves out of the chef's hands to the kitchen equipment. When it finishes, the completed task returns to one of two pickup counters. The chef always clears the VIP counter first, which is why Promise callbacks run before setTimeout callbacks.",
+    "The Event Loop is like a restaurant kitchen.\n\n- Chef = Call Stack (works on one dish at a time)\n- Kitchen staff = Web APIs (handle timers, requests)\n- VIP counter = Microtask Queue (Promises)\n- Normal counter = Callback Queue (setTimeout)\n\nChef always finishes VIP orders first before normal orders.",
 
   code: `
-console.log("1 - Start");
-setTimeout(() => console.log("4 - setTimeout"), 0);
-Promise.resolve().then(() => console.log("3 - Promise microtask"));
-console.log("2 - End");
+// =========================
+// BASIC EVENT LOOP ORDER
+// =========================
+
+console.log("1 Start");
+
+setTimeout(() => {
+  console.log("4 setTimeout");
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log("3 Promise");
+});
+
+console.log("2 End");
+
 // Output:
-// 1 - Start
-// 2 - End
-// 3 - Promise microtask
-// 4 - setTimeout
+// 1 Start
+// 2 End
+// 3 Promise
+// 4 setTimeout
+
+// =========================
+// MICROTASK PRIORITY
+// =========================
 
 Promise.resolve().then(() => {
   console.log("A");
-  Promise.resolve().then(() => console.log("B"));
+  Promise.resolve().then(() => {
+    console.log("B");
+  });
 });
-setTimeout(() => console.log("C"), 0);
+
+setTimeout(() => {
+  console.log("C");
+}, 0);
+
 // Output:
 // A
 // B
 // C
 
-// Stack and queue idea:
-// Start: Stack [global], Microtasks [], Callbacks []
-// After Promise.then: Microtasks [promise callback]
-// After setTimeout: Callbacks [timer callback]
-// Stack empties -> drain microtasks -> then run one callback
+// =========================
+// EXECUTION FLOW MODEL
+// =========================
+
+// Call Stack executes sync code first
+// Web APIs handle async tasks
+// Microtask Queue runs BEFORE Callback Queue
+// Event Loop keeps checking continuously
   `,
+
+  commonMistakes: [
+    "Thinking setTimeout runs immediately with 0ms delay",
+    "Assuming Promises and setTimeout have same priority",
+    "Confusing Call Stack with Event Loop",
+    "Not understanding Microtask Queue priority",
+    "Thinking JavaScript is multi-threaded",
+    "Ignoring async behavior in interview questions",
+    "Misunderstanding execution order in real apps",
+  ],
 
   interviewQA: [
     {
-      q: "What is the Event Loop?",
-      a: "The Event Loop is JavaScript's mechanism for running asynchronous code without blocking the main thread. It waits for the Call Stack to become empty, drains microtasks first, then processes queued callback tasks one by one.",
+      q: "What is the Event Loop in JavaScript?",
+      a: "It is a mechanism that allows JavaScript to handle asynchronous operations by coordinating the Call Stack and task queues, ensuring non-blocking execution.",
     },
     {
-      q: "What is the difference between the Microtask Queue and the Callback Queue?",
-      a: "Microtasks, such as Promise handlers, have higher priority and the queue is drained completely before the Event Loop touches the Callback Queue. The Callback Queue contains tasks like setTimeout and DOM events and runs after microtasks finish.",
+      q: "What is the difference between Microtask and Callback Queue?",
+      a: "Microtask Queue (Promises) has higher priority and runs before the Callback Queue (setTimeout, events).",
     },
     {
-      q: "Why does setTimeout with zero delay not run immediately?",
-      a: "setTimeout never runs synchronously. Even with zero delay, its callback waits until current synchronous code finishes, the Call Stack becomes empty, and all queued microtasks have been processed first.",
+      q: "Why does setTimeout not run immediately?",
+      a: "Because it is placed in the Callback Queue and only executes after the Call Stack is empty and Microtasks are completed.",
     },
     {
-      q: "Is JavaScript truly asynchronous?",
-      a: "JavaScript itself is synchronous and single threaded. The asynchronous behavior comes from browser or Node.js APIs working outside the engine, while the Event Loop coordinates when their callbacks are allowed back onto the stack.",
+      q: "What executes first: Promise or setTimeout?",
+      a: "Promise (Microtask Queue) executes first because it has higher priority than setTimeout.",
     },
+    {
+      q: "Is JavaScript synchronous or asynchronous?",
+      a: "JavaScript is synchronous and single-threaded. Asynchronous behavior is handled by Web APIs and the Event Loop.",
+    },
+  ],
+
+  realWorldUsage: [
+    "API request handling in frontend apps",
+    "UI responsiveness in browsers",
+    "Node.js async operations",
+    "Event handling (click, input, scroll)",
+    "Timers and scheduling tasks",
+    "Promise-based workflows",
+    "Real-time applications (chat, notifications)",
+  ],
+
+  interviewSummary: [
+    "Event Loop manages async execution in JavaScript",
+    "Call Stack runs synchronous code",
+    "Web APIs handle async operations",
+    "Microtasks (Promises) run before callbacks",
+    "setTimeout goes to Callback Queue",
+    "JavaScript is single-threaded but non-blocking",
+    "Execution order is critical in interviews",
   ],
 };

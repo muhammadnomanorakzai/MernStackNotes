@@ -19,84 +19,167 @@ export const promises = {
   ],
 
   definition:
-    "A Promise is an object that represents the eventual completion or failure of an asynchronous operation. It starts pending and eventually settles as either fulfilled or rejected.",
+    "A Promise is a JavaScript object that represents the eventual result of an asynchronous operation. It acts as a placeholder for a value that will be available in the future, and it can either succeed (fulfilled) or fail (rejected).",
 
-  why:
-    "Promises replaced deeply nested async callbacks with flat chains. They also made error handling more consistent by letting failures flow to one catch block instead of forcing repeated checks at every callback level.",
+  simpleExplanation:
+    "Promises are JavaScript’s way of handling async work in a cleaner and more structured way.\n\nInstead of nesting callbacks, a Promise lets you write code in a straight line using .then() and .catch().\n\nA Promise starts in a pending state.\nLater it either:\n- resolves → success (fulfilled)\n- rejects → failure\n\nThis makes async code easier to read, debug, and maintain.",
+
+  romanUrduRevision:
+    "Promise ek future value ka placeholder hota hai.\n\nYe pending se start hota hai aur ya to resolve (success) hota hai ya reject (error).\n\nIs se callback hell solve hota hai aur code clean ho jata hai.",
+
+  why: "Promises were introduced to solve the readability and maintenance problems of callback hell.\n\nThey improve async programming by:\n- Flattening nested callbacks into chains\n- Centralizing error handling in .catch()\n- Making async flow easier to reason about\n- Supporting advanced control patterns like Promise.all and race\n\nIn modern JavaScript, Promises are the foundation of async/await.",
 
   how: [
-    "Step 1 - A Promise is created with an executor that receives resolve and reject",
-    "Step 2 - resolve moves the Promise from pending to fulfilled",
-    "Step 3 - reject moves it from pending to rejected",
-    "Step 4 - then attaches success handlers and returns a new Promise for chaining",
-    "Step 5 - catch handles rejected results and also returns a Promise",
-    "Step 6 - finally always runs after settlement and is good for cleanup",
-    "Step 7 - Returning a plain value from then passes that value to the next then",
-    "Step 8 - Returning another Promise from then makes the chain wait for it",
-    "Step 9 - Promise all waits for all, allSettled waits for all results, race settles on first, and any resolves on first success",
+    "Step 1 - A Promise is created using new Promise(executor)",
+    "Step 2 - Executor receives resolve and reject functions",
+    "Step 3 - resolve changes state from pending → fulfilled",
+    "Step 4 - reject changes state from pending → rejected",
+    "Step 5 - .then() handles successful results and returns a new Promise",
+    "Step 6 - .catch() handles errors from any previous step in the chain",
+    "Step 7 - .finally() always runs after settlement for cleanup",
+    "Step 8 - Returned values in then become input for next then",
+    "Step 9 - Returning a Promise pauses chain until it resolves",
+    "Step 10 - Promise utilities manage multiple async operations together",
   ],
 
   diagram: `
 flowchart TD
-  A[new Promise] --> B[PENDING]
-  B --> C[resolve]
-  B --> D[reject]
+  A[Create Promise] --> B[PENDING]
+
+  B --> C[resolve()]
+  B --> D[reject()]
+
   C --> E[FULFILLED]
   D --> F[REJECTED]
-  E --> G[then runs]
-  F --> H[catch runs]
-  E --> I[finally runs]
-  F --> I
-  `,
+
+  E --> G[then()]
+  F --> H[catch()]
+
+  G --> I[finally()]
+  H --> I
+`,
+
+  realLifeExample:
+    "Imagine ordering food from a restaurant app.\n\nWhen you place an order, you don’t get food immediately.\nInstead, you get a promise that your order will be delivered.\n\n- Pending → order placed\n- Fulfilled → food delivered\n- Rejected → order cancelled or failed\n\nYou then handle success (eat food) or failure (refund or retry).",
 
   analogy:
-    "A Promise is like an order ticket at a restaurant. You do not have the food yet, but you do have a reliable placeholder for the future result. If the meal is completed, the success path runs. If the kitchen fails, the error path runs. Either way, the cleanup step still happens at the end.",
+    "A Promise is like booking a movie ticket online.\n\nYou don’t have the seat immediately, but you get confirmation that guarantees a future seat.\n\nLater:\n- Success → you get the seat\n- Failure → booking fails\n- Finally → you still leave the system (cleanup happens either way)",
 
   code: `
+// =========================
+// BASIC PROMISE
+// =========================
+
 const ticket = new Promise((resolve, reject) => {
-  const ok = true;
-  ok ? resolve("ready") : reject(new Error("failed"));
+  const success = true;
+
+  if (success) {
+    resolve("Ticket confirmed");
+  } else {
+    reject(new Error("Booking failed"));
+  }
 });
 
-getUser()
-  .then((user) => getPosts(user.id))
-  .then((posts) => getComments(posts[0].id))
-  .then((comments) => console.log(comments))
-  .catch((err) => console.error("Centralized error:", err))
-  .finally(() => console.log("Always runs"));
+ticket
+  .then(result => console.log(result))
+  .catch(error => console.log(error.message))
+  .finally(() => console.log("Process finished"));
 
-Promise.all([api1(), api2(), api3()]).then(console.log);
-Promise.allSettled([ok1(), bad1(), ok2()]).then(console.log);
-Promise.race([realFetch(), timeoutAfter5Seconds()]).then(console.log);
-Promise.any([cdn1(), cdn2(), cdn3()]).then(console.log);
+// =========================
+// PROMISE CHAINING
+// =========================
+
+getUser()
+  .then(user => getPosts(user.id))
+  .then(posts => getComments(posts[0].id))
+  .then(comments => console.log(comments))
+  .catch(err => console.log("Error:", err))
+  .finally(() => console.log("Done"));
+
+// =========================
+// PROMISE UTILITIES
+// =========================
+
+// ALL → waits for all (fails if one fails)
+Promise.all([api1(), api2(), api3()])
+  .then(results => console.log(results));
+
+// ALL SETTLED → waits for all results
+Promise.allSettled([api1(), api2(), api3()])
+  .then(results => console.log(results));
+
+// RACE → first finished wins (success or failure)
+Promise.race([fastAPI(), slowAPI()])
+  .then(result => console.log(result));
+
+// ANY → first successful result wins
+Promise.any([failAPI(), successAPI(), failAPI()])
+  .then(result => console.log(result));
+
+// =========================
+// CALLBACK → PROMISE CONVERSION
+// =========================
 
 function promisifyRead(id) {
   return new Promise((resolve, reject) => {
-    readUserData(id, (err, data) => (err ? reject(err) : resolve(data)));
+    readUserData(id, (err, data) => {
+      if (err) reject(err);
+      else resolve(data);
+    });
   });
 }
   `,
 
+  commonMistakes: [
+    "Forgetting that Promises are asynchronous (microtask queue)",
+    "Not returning inside .then() causing broken chains",
+    "Using nested then instead of flat chaining",
+    "Confusing Promise.all with allSettled",
+    "Ignoring error handling with catch",
+    "Thinking Promise can be cancelled directly",
+    "Mixing callbacks and promises incorrectly",
+  ],
+
   interviewQA: [
     {
-      q: "What are the three states of a Promise?",
-      a: "A Promise can be pending, fulfilled, or rejected. Once it leaves pending and settles as fulfilled or rejected, that state never changes again.",
+      q: "What is a Promise in JavaScript?",
+      a: "A Promise is an object representing a future value of an asynchronous operation that can either succeed (fulfilled) or fail (rejected).",
     },
     {
-      q: "What is the difference between Promise.all and Promise.allSettled?",
-      a: "Promise.all resolves only if every Promise fulfills, and it rejects immediately if any one fails. Promise.allSettled waits for every Promise to finish and always gives a status report for each result.",
+      q: "What are the states of a Promise?",
+      a: "A Promise has three states: pending, fulfilled, and rejected. Once settled, it cannot change again.",
     },
     {
-      q: "How does Promise chaining work?",
-      a: "Each then returns a new Promise. If a handler returns a plain value, the next then receives it directly. If it returns another Promise, the chain pauses until that Promise settles.",
+      q: "What is the difference between then and catch?",
+      a: "then handles successful resolution of a Promise, while catch handles any errors or rejections in the chain.",
     },
     {
-      q: "Can a Promise be cancelled?",
-      a: "Native Promises themselves are not cancellable once created. You can cancel the underlying operation, such as a fetch request, with tools like AbortController.",
+      q: "What is Promise.all used for?",
+      a: "Promise.all runs multiple Promises in parallel and resolves when all succeed, but fails if any one Promise fails.",
     },
     {
-      q: "What is the difference between Promise.race and Promise.any?",
-      a: "Promise.race settles as soon as the first Promise settles, whether that result is success or failure. Promise.any ignores failures and resolves on the first successful Promise, rejecting only if they all fail.",
+      q: "How is Promise used in async/await?",
+      a: "Async/await is syntactic sugar over Promises that makes asynchronous code look synchronous while still using Promises under the hood.",
     },
+  ],
+
+  realWorldUsage: [
+    "API calls in frontend and backend",
+    "Database queries in Node.js",
+    "File system operations",
+    "Authentication flows",
+    "Parallel API requests",
+    "Loading multiple resources",
+    "Error handling pipelines",
+  ],
+
+  interviewSummary: [
+    "Promise represents future async value",
+    "States: pending, fulfilled, rejected",
+    "Replaces callback hell",
+    "Supports chaining with then/catch/finally",
+    "Powerful utilities: all, race, any, allSettled",
+    "Foundation of async/await",
+    "Uses microtask queue in Event Loop",
   ],
 };

@@ -17,6 +17,15 @@ export const functionalProgramming = {
   definition:
     "Functional Programming is a style where functions are treated as first-class values, pure functions are preferred, data is updated immutably, and behavior is built by composing small transformations.",
 
+  simpleExplanation:
+    "Functional Programming (FP) is about writing 'pure' code. Instead of changing variables directly, you create new copies with the changes. Think of it like a factory line where each station does one specific job and passes the product to the next. It makes your code very predictable because the same input will ALWAYS produce the same output.",
+
+  romanUrduRevision:
+    "Functional programming mein hum code ko 'pure functions' aur 'immutability' ke asoolon par likhte hain.\nPure function hamesha same input par same output deta hai.\nHum objects ko modify nahi karte, balkay unki copies banate hain (spread operator) taake purani state mehfooz rahay.",
+
+  realLifeExample:
+    "Think of an 'Undo' button in a painting app. If you use Functional Programming, you don't just change the current picture; you save a list of every version of the picture (immutability). To undo, you just go back to the previous version in the list. This is much easier than trying to 'reverse' a complex change.",
+
   why:
     "Functional code is easier to test and reason about because outputs depend mainly on inputs. React leans heavily on these ideas through immutable state updates, pure rendering, hooks, array methods, and derived values.",
 
@@ -96,4 +105,14 @@ function memoize(fn) {
       a: "Memoization caches function results by input. Use it for expensive calculations called repeatedly with the same arguments, recursive algorithms, or React derived values where recalculation would be wasteful.",
     },
   ],
+
+  commonMistakes: [
+    "Mutating an array or object directly inside a map or reduce function.",
+    "Thinking that .concat() or .slice() mutates the original array (they return copies).",
+    "Writing functions that depend on global variables (making them impure).",
+    "Over-using recursion in JavaScript without proper tail-call optimization knowledge.",
+  ],
+
+  interviewSummary:
+    "Functional Programming promotes pure functions, immutability, and declarative code. It is the heart of React's architecture (State, Props, and Hooks). Mastering FP means mastering predictability, testability, and scalability in modern web development.",
 };

@@ -17,6 +17,15 @@ export const symbolsWeakmap = {
   definition:
     "Symbol is a primitive that creates guaranteed unique values. WeakMap and WeakSet store object references weakly, allowing garbage collection when those objects are no longer referenced elsewhere.",
 
+  simpleExplanation:
+    "Symbol ek unique ID ki tarah hai. Do symbols kabhi barabar nahi hote. WeakMap/WeakSet objects ko 'weakly' hold karte hain, taake jab object use na ho raha ho to memory se delete ho jaye.",
+
+  romanUrduRevision:
+    "Symbol unique values create karta hai jo collision nahi hone dete. WeakMap memory management ke liye best hai kyunke ye unused objects ko automatically discard hone deta hai.",
+
+  realLifeExample:
+    "Imagine a library (WeakMap) that only tracks books currently being read. As soon as a reader (Object) returns all their books and goes home (deleted from memory), the library automatically deletes their tracking record. There's no need for a manual cleanup.",
+
   why:
     "Symbols avoid property name collisions in shared objects and libraries. WeakMap and WeakSet let you attach metadata or track objects without accidentally keeping them alive forever.",
 
@@ -91,4 +100,13 @@ console.log(Symbol.for("app:role") === Symbol.for("app:role")); // true
       a: "No. WeakMap and WeakSet are intentionally non-iterable and have no size because garbage collection can remove entries at any time.",
     },
   ],
+
+  commonMistakes: [
+    "Thinking Symbol() creates an object (it's a primitive).",
+    "Trying to use a string or number as a key in a WeakMap (must be an object).",
+    "Iterating over a WeakMap (not possible).",
+  ],
+
+  interviewSummary:
+    "Symbols provide unique property keys to prevent collisions. WeakMap and WeakSet are key for memory management as they allow objects to be garbage collected when no longer in use.",
 };

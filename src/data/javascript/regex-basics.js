@@ -21,6 +21,15 @@ export const regexBasics = {
   definition:
     'A regular expression is a pattern that describes a set of strings. In JavaScript, regex literals use /pattern/flags or the RegExp constructor, and they are used for validation, searching, replacing, and extracting text.',
 
+  simpleExplanation:
+    "RegEx (Regular Expressions) are like 'Search and Replace' on steroids. Instead of searching for a fixed word, you search for a pattern. For example, 'find all numbers', 'find all capital letters', or 'find everything that looks like an email address'. It's a universal text-processing language used in almost every programming language.",
+
+  romanUrduRevision:
+    "RegEx ek pattern matching language hai. Agar koi complex task ho jaise email validate karna ya text se phone numbers nikaalna, to hum RegEx use karte hain. /pattern/flags iska standard format hai.",
+
+  realLifeExample:
+    "When you sign up for a website and it says 'Invalid Email' or 'Password must contain a number', that is RegEx in action. For example, a password RegEx like /^(?=.*\\d).{8,}$/ checks if there is at least one digit and the length is 8. It's like a bouncer at a club checking if you are wearing the right shoes and have an ID.",
+
   why:
     'String methods like includes() only match literal text. RegEx can match patterns such as an email address, a date format, uppercase words, repeated spaces, or all numbers inside a paragraph.',
 
@@ -50,6 +59,9 @@ flowchart TD
 
   analogy:
     "A regex is like a stencil for text. Wherever the text fits the stencil, it matches. \\d is a digit-shaped slot, [a-z] is a lowercase-letter slot, + means one or more, and ^ plus $ pin the match to the start and end.",
+
+  realLifeExample:
+    "When you sign up for a website and it says 'Invalid Email' or 'Password must contain a number', that is RegEx in action. For example, a password RegEx like /^(?=.*\\d).{8,}$/ checks if there is at least one digit and the length is 8. It's like a bouncer at a club checking if you are wearing the right shoes and have an ID.",
 
   code: `
 function isValidEmail(email) {
@@ -88,4 +100,13 @@ console.log(match.groups.year, match.groups.month, match.groups.day);
       a: "A common practical pattern is /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/. It checks a username, @, domain, literal dot, and a two-or-more-letter top-level domain, though production systems should use battle-tested validation.",
     },
   ],
+
+  commonMistakes: [
+    "Using too much RegEx for simple tasks that includes() or startsWith() can handle.",
+    "Forgetting the 'g' (global) flag and only replacing the first match.",
+    "Making RegEx patterns too complex (ReDoS attack risk) which slows down the app.",
+  ],
+
+  interviewSummary:
+    "RegEx is a powerful tool for text processing and validation. Knowing common character classes (\\d, \\w) and flags (g, i) is essential for solving string-related interview problems.",
 };

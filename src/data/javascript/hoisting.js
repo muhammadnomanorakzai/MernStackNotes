@@ -5,117 +5,286 @@ export const hoisting = {
   difficulty: "Beginner",
   tags: [
     "hoisting",
-    "var",
-    "function declaration",
-    "TDZ",
     "execution context",
     "creation phase",
+    "execution phase",
+    "TDZ",
+    "var",
+    "let",
+    "const",
+    "function declaration",
+    "function expression",
   ],
 
   definition:
-    "Hoisting is a JavaScript behavior that occurs before code execution begins. During the Creation Phase, JavaScript scans the current scope and prepares memory for variables, functions, and classes. Because of this preparation, some declarations appear to be available before the line where they are written. Hoisting does not move code; it is simply the result of JavaScript allocating memory before execution starts.",
+    "Hoisting is a JavaScript behavior where declarations are processed before code execution begins. During the Creation Phase of an Execution Context, JavaScript allocates memory for variables, functions, and classes. Because of this preparation step, some declarations appear to be available before the line where they are written.",
 
-  why: "JavaScript cannot execute code efficiently without first understanding what variables, functions, and scopes exist. Before running any line of code, the engine creates an Execution Context and registers declarations in memory. This process explains why function declarations can be called before their definition, why var returns undefined before assignment, and why let and const throw a ReferenceError when accessed before initialization.",
+  simpleExplanation:
+    "Hoisting is one of the most misunderstood concepts in JavaScript. Many developers think JavaScript physically moves variables and functions to the top of the file, but that is not what actually happens.\n\nBefore JavaScript executes any code, it first creates an Execution Context. During this process, JavaScript scans the current scope and prepares memory for declarations.\n\nFunction declarations are stored completely in memory, making them available immediately. Variables declared with var are also stored in memory and initialized with undefined. Variables declared with let and const are created as bindings but remain uninitialized until their declaration line executes.\n\nAfter memory preparation is complete, JavaScript enters the Execution Phase and runs code line by line. This behavior creates the illusion that declarations were moved to the top, which is why the concept is called Hoisting.\n\nUnderstanding Hoisting is important because it explains why some code works before its declaration while other code throws errors.",
+
+  romanUrduRevision:
+    "Hoisting ka matlab code ko upar move karna nahi hota. JavaScript pehle memory create karti hai phir code execute karti hai.\nFunction declarations fully available hoti hain, var undefined deta hai, aur let/const TDZ mein rehte hain.",
+
+  why: "Before JavaScript can execute code, it must understand which variables, functions, and scopes exist. The engine performs a preparation step called the Creation Phase. Without this phase, JavaScript would not know what identifiers are available during execution.",
 
   theory: `
-Hoisting is one of the most important concepts for understanding how JavaScript executes code. Many developers believe that JavaScript physically moves declarations to the top of a file, but that is not what actually happens.
+JavaScript executes code in two major phases:
 
-Before executing code, JavaScript first creates an Execution Context. During this Creation Phase, the engine scans the current scope and allocates memory for declarations. Function declarations are stored completely in memory, var variables are initialized with undefined, and let or const variables are created but remain uninitialized.
+1. Creation Phase
+2. Execution Phase
 
-After this preparation step, JavaScript enters the Execution Phase and begins running code line by line from top to bottom. Values are assigned only when their declaration line is reached.
+During the Creation Phase:
 
-Because memory is prepared before execution starts, some declarations appear to be available before their position in the source code. This behavior is known as hoisting.
+• Memory is allocated for variables
+• Function declarations are stored completely
+• var variables are initialized with undefined
+• let and const bindings are created but remain uninitialized
+• Class declarations are registered but remain unavailable
 
-The most important thing to remember is that hoisting is not about moving code. Hoisting is the result of JavaScript creating memory for declarations before executing the program.
+After this setup is complete, JavaScript enters the Execution Phase.
+
+During the Execution Phase:
+
+• Code runs line by line
+• Variables receive actual values
+• Functions are called
+• Expressions are evaluated
+
+Hoisting is simply the visible result of the Creation Phase.
 `,
 
   mentalModel: `
-When you hear the word hoisting, do not think:
+Never think:
 
 ❌ JavaScript moves code to the top.
 
-Instead think:
+Always think:
 
-✅ JavaScript scans the scope first, allocates memory, and then executes the code.
+✅ JavaScript scans the scope first.
+✅ Memory is allocated.
+✅ Then code executes.
 
-This mental model explains almost every hoisting interview question.
+This mental model explains almost every hoisting question asked in interviews.
 `,
 
   how: [
-    "Step 1 - Before execution, the engine scans the scope during the Creation Phase",
-    "Step 2 - Function declarations are fully hoisted and ready to call",
-    "Step 3 - var declarations are hoisted and initialized as undefined",
-    "Step 4 - let and const are hoisted but remain uninitialized in the Temporal Dead Zone",
-    "Step 5 - Function expressions follow variable rules instead of function declaration rules",
-    "Step 6 - Class declarations also behave like let and stay unavailable before their line",
-    "Step 7 - In the Execution Phase, code runs top to bottom and values get assigned",
+    "Step 1 - JavaScript creates an Execution Context",
+    "Step 2 - The Creation Phase scans all declarations",
+    "Step 3 - Function declarations are fully stored in memory",
+    "Step 4 - var variables are initialized with undefined",
+    "Step 5 - let and const are created but remain in the Temporal Dead Zone",
+    "Step 6 - Class declarations behave similarly to let and const",
+    "Step 7 - JavaScript enters the Execution Phase",
+    "Step 8 - Code runs line by line and values are assigned",
   ],
 
   diagram: `
 flowchart TD
-  A[Phase 1 Creation Phase] --> B[Function Declarations Fully available in memory]
-  A --> C[var variables Available as undefined]
-  A --> D[let and const In TDZ ReferenceError if accessed]
-  A --> E[Function expressions follow variable rules]
-  F[Phase 2 Execution Phase] --> G[Code runs top to bottom]
-  G --> H[Values assigned when each line is reached]
-  `,
 
-  analogy: `Hoisting kya hai?
-Jab JavaScript code run karta hai, pehle ek baar pura code scan karta hai. Is scanning mein woh saari variable aur function declarations memory mein upar le jaata hai. Iss process ko Hoisting kehte hain.
-Var ke saath:
-Agar tum var use karo aur variable declare karne se pehle use karo, toh error nahi aayegi — balke undefined milega. Kyunki JavaScript ne declaration upar kar di thi, lekin value assign nahi ki thi.
-Let aur Const ke saath:
-Yeh bhi hoist hote hain, lekin Temporal Dead Zone (TDZ) mein rehte hain. Matlab agar tum pehle access karo toh ReferenceError aayega. Yeh actually achha hai — silent bugs se bachata hai.
-Function Declaration ke saath:
-Poori function hoisting hoti hai — matlab tum function ko uske declare karne se pehle call kar sakte ho. Yeh JavaScript ka ek powerful feature hai.
-Function Expression aur Arrow Function ke saath:
-Yeh hoist nahi hote properly — sirf variable hota hai hoist. Toh pehle call karo toh TypeError aayega.
-Asaan tip: Hamesha let aur const use karo, var se door raho. Aur functions ko pehle declare karo, phir call karo — iss tarah code clean aur readable rehta hai. Hoisting samajhna bugs dhundhne mein bahut kaam aata hai! 🚀`,
+  A[JavaScript Starts]
+
+  A --> B[Creation Phase]
+
+  B --> C[Function Declarations Stored Completely]
+
+  B --> D[var Created]
+  D --> E[Initialized as undefined]
+
+  B --> F[let Created]
+  F --> G[Temporal Dead Zone]
+
+  B --> H[const Created]
+  H --> I[Temporal Dead Zone]
+
+  B --> J[Class Declaration]
+  J --> K[Temporal Dead Zone]
+
+  B --> L[Execution Phase]
+
+  L --> M[Code Runs Top To Bottom]
+
+  M --> N[Values Assigned]
+  M --> O[Functions Execute]
+`,
+
+  realLifeExample:
+    "Imagine a school preparing for the first day of classes. Before students enter the classroom, the school administration creates attendance sheets, assigns classrooms, and registers teacher information. When classes actually begin, all required information is already prepared. JavaScript works in a similar way. Before executing code, it prepares memory for variables and functions.",
+
+  analogy:
+    "Think of JavaScript as organizing a conference. Before the event starts, organizers prepare name tags, room assignments, schedules, and speaker lists. Only after preparation is complete does the event begin. Hoisting is this preparation stage happening before execution.",
 
   code: `
-sayHello(); // works because this is a function declaration
+// ====================================
+// FUNCTION DECLARATION
+// ====================================
+
+sayHello();
+
 function sayHello() {
   console.log("Hello");
 }
 
-console.log(total); // undefined because var is hoisted
-var total = 5;
+// Works because function declarations
+// are fully stored during Creation Phase
 
-// console.log(price); // ReferenceError in TDZ
-let price = 100;
 
-// greet(); // TypeError: greet is not a function
+
+// ====================================
+// VAR HOISTING
+// ====================================
+
+console.log(total);
+
+// undefined
+
+var total = 100;
+
+console.log(total);
+
+// 100
+
+
+
+// ====================================
+// LET AND CONST
+// ====================================
+
+// console.log(price);
+
+// ReferenceError
+
+let price = 50;
+
+
+
+// console.log(API_URL);
+
+// ReferenceError
+
+const API_URL = "example.com";
+
+
+
+// ====================================
+// FUNCTION EXPRESSION
+// ====================================
+
+// greet();
+
+// TypeError
+
 var greet = function () {
   console.log("Hi");
 };
 
-if (true) {
-  var leaked = "I escaped the block";
+
+
+// ====================================
+// ARROW FUNCTION
+// ====================================
+
+// add(2, 3);
+
+// TypeError
+
+const add = (a, b) => a + b;
+
+
+
+// ====================================
+// CLASS HOISTING
+// ====================================
+
+// const user = new User();
+
+// ReferenceError
+
+class User {
+  constructor(name) {
+    this.name = name;
+  }
 }
-console.log(leaked); // accessible outside the if block
-  `,
+`,
+
+  commonMistakes: [
+    "Thinking JavaScript physically moves code.",
+    "Assuming let and const are not hoisted.",
+    "Confusing undefined with ReferenceError.",
+    "Calling Function Expressions before assignment.",
+    "Calling Arrow Functions before initialization.",
+    "Forgetting that classes also have a TDZ.",
+    "Using var and expecting block scope.",
+  ],
 
   interviewQA: [
     {
-      q: "What is hoisting in JavaScript?",
-      a: "Hoisting is the behavior where JavaScript prepares variable and function declarations before code executes. That setup happens during the Creation Phase, but assignments still occur later when execution reaches each line.",
+      q: "What is Hoisting in JavaScript?",
+      a: "Hoisting is the behavior where JavaScript prepares declarations during the Creation Phase before code execution begins.",
     },
+
     {
-      q: "What is the difference between hoisting of var vs let and const?",
-      a: "var is hoisted and initialized to undefined, so reading it early does not crash. let and const are also hoisted, but they stay uninitialized in the Temporal Dead Zone, so early access throws a ReferenceError.",
+      q: "Does JavaScript move code to the top?",
+      a: "No. JavaScript does not physically move code. It allocates memory for declarations before execution starts.",
     },
+
+    {
+      q: "What is the difference between var and let hoisting?",
+      a: "var is hoisted and initialized as undefined. let is hoisted but remains uninitialized inside the Temporal Dead Zone.",
+    },
+
+    {
+      q: "What is the Temporal Dead Zone (TDZ)?",
+      a: "The TDZ is the period between scope creation and variable initialization where accessing a let or const variable throws a ReferenceError.",
+    },
+
+    {
+      q: "Are let and const hoisted?",
+      a: "Yes. They are hoisted, but they are not initialized immediately.",
+    },
+
+    {
+      q: "Why does var return undefined?",
+      a: "Because var is automatically initialized with undefined during the Creation Phase.",
+    },
+
+    {
+      q: "Why can function declarations be called before they are defined?",
+      a: "Because the entire function is stored in memory during the Creation Phase.",
+    },
+
     {
       q: "Are function expressions hoisted?",
-      a: "Not like function declarations. A function expression follows the rules of the variable holding it, so only the variable name is hoisted and the function body is not callable until assignment happens.",
+      a: "Only the variable declaration is hoisted. The function value becomes available after assignment.",
     },
+
     {
-      q: "What is the Temporal Dead Zone?",
-      a: "The Temporal Dead Zone is the time between scope creation and the line where a let or const declaration is executed. During that time the binding exists, but any access throws a ReferenceError.",
+      q: "Are classes hoisted?",
+      a: "Yes, but like let and const they remain in a Temporal Dead Zone until their declaration executes.",
     },
+
     {
-      q: "Does JavaScript actually move declarations to the top of the file?",
-      a: "No. JavaScript does not physically move code. During the Creation Phase it allocates memory for declarations before execution begins, which creates the behavior known as hoisting.",
+      q: "What are the two phases of JavaScript execution?",
+      a: "Creation Phase and Execution Phase.",
     },
+  ],
+
+  realWorldUsage: [
+    "Understanding TDZ errors",
+    "Debugging ReferenceError issues",
+    "Interview questions",
+    "Execution Context understanding",
+    "Function declaration behavior",
+    "Class initialization debugging",
+  ],
+
+  interviewSummary: [
+    "Hoisting happens during the Creation Phase.",
+    "JavaScript does not move code.",
+    "Function declarations are fully hoisted.",
+    "var becomes undefined.",
+    "let and const enter the TDZ.",
+    "Classes also have a TDZ.",
+    "Function expressions follow variable rules.",
+    "Execution Context is the foundation of hoisting.",
   ],
 };

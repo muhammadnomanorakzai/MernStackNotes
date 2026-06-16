@@ -8,7 +8,7 @@ function EmptyState({ allTopics, onSelectTopic }) {
 
   return (
     <div className="flex min-h-full items-center justify-center">
-      <div className="w-full max-w-4xl rounded-[32px] border border-white/8 bg-[#111118] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-10">
+      <div className="w-full max-w-4xl rounded-4xl border border-white/8 bg-[#111118] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-10">
         <div className="mx-auto max-w-2xl text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[28px] border border-violet-400/25 bg-violet-500/12 text-2xl font-semibold tracking-[0.24em] text-violet-200">
             DN

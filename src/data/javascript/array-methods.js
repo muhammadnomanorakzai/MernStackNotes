@@ -18,36 +18,47 @@ export const arrayMethods = {
   ],
 
   definition:
-    "JavaScript arrays provide higher order methods that accept callback functions. The core ones like map, filter, reduce, and find make code more declarative and often replace manual loops.",
+    "Array methods in JavaScript are built-in higher-order functions that operate on arrays using callback functions. They are used to transform, filter, search, and aggregate data in a declarative and functional programming style instead of using manual loops.",
 
-  why:
-    "Array methods describe what you want instead of spelling out every loop step. That usually makes code shorter, easier to read, safer for React state updates, and easier to chain together.",
+  simpleExplanation:
+    "JavaScript arrays come with powerful built-in methods that replace traditional loops.\n\nEach method has a specific responsibility and behaves differently:\n\n- map → transforms every element and returns a new array\n- filter → selects only elements that match a condition\n- reduce → converts all elements into a single value\n- find → returns the first matching element\n- forEach → runs code for each element (no return)\n- some → checks if at least one item passes a condition\n- every → checks if all items pass a condition\n- sort → arranges elements (mutates original array)\n- flat → removes nested array levels\n\nThese methods are heavily used in real-world applications like React, backend APIs, and data processing because they make code readable, predictable, and functional.",
+
+  romanUrduRevision:
+    "Array methods JavaScript mein built-in functions hotay hain jo arrays ko process karte hain.\n\nLoop likhnay ki jagah hum map, filter, reduce, find jaisay methods use karte hain.\n\nYeh code ko simple, readable aur professional bana dete hain.",
+
+  why: "Array methods exist to make data processing easier, safer, and more readable. Instead of writing complex loops, developers can describe what they want in a clean way.\n\nThey also reduce bugs caused by manual iteration and mutation. In modern frameworks like React, immutability and clean transformations are extremely important, and array methods support this perfectly.",
 
   how: [
-    "Step 1 - forEach visits each item for side effects and returns undefined",
-    "Step 2 - map transforms every element and returns a new array of the same length",
-    "Step 3 - filter keeps only elements whose callback returns truthy",
-    "Step 4 - reduce combines all elements into one final value",
-    "Step 5 - find returns the first matching element and stops early",
-    "Step 6 - some checks whether at least one element passes",
-    "Step 7 - every checks whether all elements pass",
-    "Step 8 - sort mutates the original array and needs a compare function for numbers",
+    "Step 1 - JavaScript arrays provide built-in higher order functions",
+    "Step 2 - Each method receives a callback function",
+    "Step 3 - Callback runs for each element based on method behavior",
+    "Step 4 - Some methods return new arrays (map, filter)",
+    "Step 5 - Some return single value (reduce, find)",
+    "Step 6 - Some return boolean (some, every)",
+    "Step 7 - Some mutate original array (sort, reverse)",
+    "Step 8 - All methods simplify looping logic into declarative style",
   ],
 
   diagram: `
 flowchart TD
-  A[Input users array] --> B[map transforms every item]
-  A --> C[filter keeps matching items]
-  A --> D[reduce combines to one value]
-  A --> E[find stops at first match]
-  B --> F[Same length new array]
-  C --> G[Fewer items new array]
-  D --> H[Single result]
-  E --> I[First match or undefined]
-  `,
+  A[Array Input]
+
+  A --> B[map → transform each item → new array]
+  A --> C[filter → condition check → smaller array]
+  A --> D[reduce → combine all → single value]
+  A --> E[find → first match → single item]
+  A --> F[forEach → side effects only]
+  A --> G[some → at least one true]
+  A --> H[every → all must be true]
+  A --> I[sort → reorder original array]
+  A --> J[flat → remove nesting]
+`,
+
+  realLifeExample:
+    "Imagine a school student database system.\n\n- map → convert students into their names list\n- filter → select only students who passed exams\n- reduce → calculate total marks of class\n- find → search one specific student\n- some → check if any student failed\n- every → check if all students passed\n- sort → arrange students by marks\n\nEach method solves a real-world data problem efficiently.",
 
   analogy:
-    "Imagine a factory line of products. map repaints every product, filter removes the failed ones, reduce builds a final summary report, and find is a manager who grabs the first matching product and stops walking the line.",
+    "Think of an array as a classroom.\n\nmap is like a teacher updating every student's report card.\nfilter is removing students who failed.\nreduce is calculating total class score.\nfind is the teacher searching for one specific student.\nsome is checking if at least one student is absent.\nevery is checking if all students submitted homework.",
 
   code: `
 const users = [
@@ -57,36 +68,125 @@ const users = [
   { name: "Zara", age: 19, score: 91, active: true },
 ];
 
-console.log(users.map((u) => u.name));
-console.log(users.filter((u) => u.active && u.age >= 18));
-console.log(users.reduce((sum, u) => sum + u.score, 0));
-console.log(users.reduce((acc, u) => ((acc[u.active] ??= []).push(u), acc), {}));
-console.log(users.find((u) => u.score > 90));
-console.log(users.some((u) => u.score > 90), users.every((u) => u.age >= 18));
-console.log(users.filter((u) => u.active).map((u) => u.name).sort());
-console.log([10, 9, 100].sort(), [10, 9, 100].sort((a, b) => a - b));
+// =========================
+// map → transform each element
+// =========================
+const names = users.map((user) => user.name);
+console.log(names);
+
+// =========================
+// filter → select matching elements
+// =========================
+const activeAdults = users.filter(
+  (user) => user.active && user.age >= 18
+);
+console.log(activeAdults);
+
+// =========================
+// reduce → combine into single value
+// =========================
+const totalScore = users.reduce((sum, user) => {
+  return sum + user.score;
+}, 0);
+console.log(totalScore);
+
+// reduce → grouping example
+const grouped = users.reduce((acc, user) => {
+  (acc[user.active] ??= []).push(user);
+  return acc;
+}, {});
+console.log(grouped);
+
+// =========================
+// find → first matching element
+// =========================
+const topStudent = users.find((user) => user.score > 90);
+console.log(topStudent);
+
+// =========================
+// some → at least one match
+// =========================
+console.log(users.some((user) => user.score > 90));
+
+// =========================
+// every → all must match
+// =========================
+console.log(users.every((user) => user.age >= 18));
+
+// =========================
+// forEach → side effects only
+// =========================
+users.forEach((user) => console.log(user.name));
+
+// =========================
+// sort → MUTATES original array
+// =========================
+console.log([10, 9, 100].sort());
+console.log([10, 9, 100].sort((a, b) => a - b));
+
+// =========================
+// flat → remove nesting
+// =========================
+console.log([1, [2, [3, 4]]].flat(2));
   `,
+
+  commonMistakes: [
+    "Thinking map modifies the original array",
+    "Forgetting to return value inside reduce",
+    "Assuming filter returns a single value",
+    "Confusing find with filter",
+    "Using sort without compare function for numbers",
+    "Mutating state directly instead of using immutable methods",
+    "Not understanding that forEach returns undefined",
+  ],
 
   interviewQA: [
     {
-      q: "What is the difference between map and forEach?",
-      a: "map returns a new transformed array and is meant for producing output. forEach returns undefined and is used for side effects like logging or mutating something outside the loop.",
+      q: "What is map in JavaScript arrays?",
+      a: "map is used to transform each element of an array and returns a new array with the same length.",
     },
     {
-      q: "How does reduce work? Give an example.",
-      a: "reduce carries an accumulator through the array. Each callback return becomes the accumulator for the next step, so it can build sums, objects, strings, or any other final result.",
+      q: "How does filter work?",
+      a: "filter returns a new array containing only elements that satisfy a given condition.",
     },
     {
-      q: "What is the difference between find and filter?",
-      a: "find returns the first matching element itself and stops searching. filter returns a new array of all matching elements, even if that result is empty.",
+      q: "What is reduce used for?",
+      a: "reduce is used to convert an array into a single value by applying a function to each element.",
     },
     {
-      q: "Does map mutate the original array?",
-      a: "No. map returns a new array and leaves the original untouched. Mutation happens with methods like sort, reverse, splice, push, and pop.",
+      q: "Difference between find and filter?",
+      a: "find returns the first matching element, while filter returns all matching elements.",
     },
     {
-      q: "How would you use these methods in a React component?",
-      a: "map is commonly used to render lists of JSX, filter narrows down visible items, and reduce computes derived values like totals or grouped data. Their non mutating style fits React state updates well.",
+      q: "Does sort mutate array?",
+      a: "Yes, sort changes the original array in place.",
     },
+    {
+      q: "Why are array methods important in React?",
+      a: "They help maintain immutability and make UI rendering predictable using methods like map and filter.",
+    },
+  ],
+
+  realWorldUsage: [
+    "Rendering UI lists in React using map",
+    "Filtering API responses before displaying data",
+    "Calculating totals using reduce",
+    "Searching records using find",
+    "Validating data using some and every",
+    "Transforming backend responses",
+    "Data aggregation in dashboards",
+    "Sorting and organizing UI data",
+  ],
+
+  interviewSummary: [
+    "map → transforms data",
+    "filter → selects data",
+    "reduce → combines data into one value",
+    "find → returns first match",
+    "forEach → side effects only",
+    "some → at least one true",
+    "every → all must be true",
+    "sort → mutates original array",
+    "array methods are core to modern JavaScript",
   ],
 };

@@ -17,8 +17,16 @@ export const designPatterns = {
   definition:
     "Design patterns are proven reusable templates for solving recurring software design problems. In JavaScript interviews, the most important patterns include Singleton, Observer, Factory, Module, and Decorator.",
 
-  why:
-    "Design patterns show whether you can recognize common architecture problems and choose a stable solution. Many patterns already appear in daily JavaScript work, including event emitters, React context updates, module exports, middleware, and higher-order functions.",
+  simpleExplanation:
+    "Design patterns are like 'best practices' that developers have figured out over many years. Instead of reinventing the wheel every time you have a problem (like how to share one single configuration object across 50 files), you use a pattern. A pattern isn't a piece of code you copy-paste; it's a structural idea you follow to keep your app organized and scalable.",
+
+  romanUrduRevision:
+    "Design patterns software engineering ke mushkil masail ke tried-and-tested hal (solutions) hain.\nSingleton matlab poori app mein sirf ek instance (jesay database connection).\nObserver matlab subscribe/publish mechanism (jesay event listeners).\nYe patterns code ko organized aur readable banate hain.",
+
+  realLifeExample:
+    "Think of a 'Theme' in a massive app like Facebook. You want every single button, box, and background to share the exact same theme settings. Instead of creating a new theme object every time, you use a Singleton to ensure there is only ONE theme object that every component talks to.",
+
+  why: "Design patterns show whether you can recognize common architecture problems and choose a stable solution. Many patterns already appear in daily JavaScript work, including event emitters, React context updates, module exports, middleware, and higher-order functions.",
 
   how: [
     "Step 1 - Singleton ensures only one shared instance exists",
@@ -96,4 +104,14 @@ function withLogging(fn) {
       a: "A Decorator wraps an existing function or object to add behavior without modifying the original. JavaScript uses this idea in higher-order functions, middleware, logging wrappers, memoization, and React HOCs.",
     },
   ],
+
+  commonMistakes: [
+    "Over-engineering simple code by forcing design patterns where they aren't needed.",
+    "Applying the Singleton pattern to objects that should actually have multiple instances.",
+    "Forgetting to unsubscribe in the Observer pattern, leading to memory leaks.",
+    "Using a Factory for very simple objects where 'new' or a simple object literal would suffice.",
+  ],
+
+  interviewSummary:
+    "Design patterns are architectural solutions for naming and solving common coding challenges. Singleton ensures one shared instance; Observer manages event-driven updates; Factory simplifies object creation; Module protects private data; Decorator adds features without changes. Use them for scalability, not just for decoration.",
 };
