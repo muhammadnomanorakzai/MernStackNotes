@@ -10,7 +10,7 @@ import UrduRevision from "./UrduRevision.jsx";
 import RealLifeExample from "./RealLifeExample.jsx";
 import WorldUsage from "./WorldUsage.jsx";
 import CommonMistakes from "./CommonMistakes.jsx";
-import InterviewSummary from "./interviewSummary.jsx";
+import InterviewSummary from "./InterviewSummary.jsx";
 
 const DiagramBlock = lazy(() => import("./DiagramBlock.jsx"));
 const CodeBlock = lazy(() => import("./CodeBlock.jsx"));
@@ -50,25 +50,37 @@ function NoteCard({ topic, allTopics }) {
 
       {topic.definition && <DefinitionBlock definition={topic.definition} />}
       {topic.why && <WhyBlock why={topic.why} />}
-      {topic.simpleExplanation && <ExplanationBlock simpleExplanation={topic.simpleExplanation} />}
-      {topic.romanUrduRevision && <UrduRevision romanUrduRevision={topic.romanUrduRevision} />}
+      {topic.simpleExplanation && (
+        <ExplanationBlock simpleExplanation={topic.simpleExplanation} />
+      )}
+      {topic.romanUrduRevision && (
+        <UrduRevision romanUrduRevision={topic.romanUrduRevision} />
+      )}
       {topic.how && <HowBlock how={topic.how} />}
       {topic.diagram && (
         <Suspense fallback={<LoadingCard title="Visual memory anchor" />}>
           <DiagramBlock diagram={topic.diagram} title={topic.title} />
         </Suspense>
       )}
-      {topic.realLifeExample && <RealLifeExample realLifeExample={topic.realLifeExample} />}
+      {topic.realLifeExample && (
+        <RealLifeExample realLifeExample={topic.realLifeExample} />
+      )}
       {topic.analogy && <AnalogyBlock analogy={topic.analogy} />}
       {topic.code && (
         <Suspense fallback={<LoadingCard title="Code example" />}>
           <CodeBlock code={topic.code} />
         </Suspense>
       )}
-      {topic.commonMistakes && <CommonMistakes commonMistakes={topic.commonMistakes} />}
+      {topic.commonMistakes && (
+        <CommonMistakes commonMistakes={topic.commonMistakes} />
+      )}
       {topic.interviewQA && <InterviewQA interviewQA={topic.interviewQA} />}
-      {topic.realWorldUsage && <WorldUsage realWorldUsage={topic.realWorldUsage} />}
-      {topic.interviewSummary && <InterviewSummary interviewSummary={topic.interviewSummary} />}
+      {topic.realWorldUsage && (
+        <WorldUsage realWorldUsage={topic.realWorldUsage} />
+      )}
+      {topic.interviewSummary && (
+        <InterviewSummary interviewSummary={topic.interviewSummary} />
+      )}
 
       <section className="rounded-[28px] border border-white/8 bg-[#111118] p-6 shadow-[0_22px_60px_rgba(0,0,0,0.28)]">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
