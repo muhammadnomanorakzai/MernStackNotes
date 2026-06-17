@@ -3,7 +3,14 @@ export const expressEnvConfig = {
   title: "Environment Configuration — Dotenv & NODE_ENV",
   category: "Express",
   difficulty: "Intermediate",
-  tags: ["dotenv", "NODE_ENV", "Config", "Environment Variables", "Best Practices", "Security"],
+  tags: [
+    "dotenv",
+    "NODE_ENV",
+    "Config",
+    "Environment Variables",
+    "Best Practices",
+    "Security",
+  ],
 
   definition:
     "Environment configuration is the process of managing application settings (like database URLs, secret keys, and port numbers) differently based on where the app is running (Development, Testing, or Production). In Express, this is standardly handled using 'dotenv' files and the 'process.env.NODE_ENV' variable.",
@@ -64,13 +71,7 @@ if (isProduction) {
 
 app.listen(port, () => {
   console.log(\`Server started on port \${port}\`);
-});
-
-// --- .env file (Root) ---
-// DATABASE_URL=mongodb://localhost:27017/mydb
-// STRIPE_KEY=sk_test_4eC39HqLyjWDarjtT1zdp7dc
-// JWT_SECRET=super-secret-random-string
-  `,
+});`,
 
   commonMistake: [
     "Committing the '.env' file to GitHub/Git. (ALWAYS add '.env' to your '.gitignore' file).",
